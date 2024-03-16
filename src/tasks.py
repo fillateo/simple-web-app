@@ -12,13 +12,7 @@ def send_scheduled_emails():
         email_repository = container.email_repository()
         email_service = container.email_service()
 
-        current_time = datetime.now()
-        emails_to_send = email_repository.find(
-            {
-                "sent": False,
-                "timestamp": email_repository.base_class.timestamp <= current_time,
-            }
-        )
+        emails_to_send = email_repository.find({"need_send_email": True})
 
         for email in emails_to_send:
             email_service.send_email(email.id)
