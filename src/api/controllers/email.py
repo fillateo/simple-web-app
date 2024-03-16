@@ -1,7 +1,7 @@
 import logging
 
 from dependency_injector.wiring import Provide, inject
-from flask import Blueprint
+from flask import Blueprint, render_template
 
 from src.api.middleware import post_data_required
 from src.api.responses import create_response
@@ -19,3 +19,8 @@ def save_email(json_data, email_service=Provide[DependencyContainer.email_servic
     validated_data = EmailSchema().load(json_data)
     service_email = email_service.create(data=validated_data)
     return create_response(service_email, EmailSchema)
+
+
+@blueprint.route("/", methods=["GET"])
+def show_email_form():
+    return render_template("email_form.html")

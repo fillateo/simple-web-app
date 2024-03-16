@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Scheduled Email</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5">
+  <h2>Send Scheduled Email</h2>
+  <form id="emailForm">
+    <div class="form-group">
+      <label for="event_id">Event ID:</label>
+      <input type="text" class="form-control" id="event_id" name="event_id" required>
+    </div>
+    <div class="form-group">
+      <label for="email_subject">Email Subject:</label>
+      <input type="text" class="form-control" id="email_subject" name="email_subject" required>
+    </div>
+    <div class="form-group">
+      <label for="email_content">Email Content:</label>
+      <textarea class="form-control" id="email_content" name="email_content" rows="4" required></textarea>
+    </div>
+    <div class="form-group">
+      <label for="timestamp">Timestamp:</label>
+      <input type="datetime-local" class="form-control" id="timestamp" name="timestamp" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Send Scheduled Email</button>
+  </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#emailForm').submit(function(event) {
+          event.preventDefault();
+      
+          var formData = {
+            event_id: $('#event_id').val(),
+            email_subject: $('#email_subject').val(),
+            email_content: $('#email_content').val(),
+            timestamp: formatDate(new Date($('#timestamp').val()))
+          };
+      
+          $.ajax({
+            type: 'POST',
+            url: '/email',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+              alert('Email sent successfully!');
+            },
+            error: function(xhr, status, error) {
+              console.error(xhr.responseText);
+              alert('Error sending email. Please try again.');
+            }
+          });
+        });
+      });
+      
+      function formatDate(date) {
+        var day = date.getDate();
+        var month = date.toLocaleString('default', { month: 'short' });
+        var year = date.getFullYear();
+        var hours = ('0' + date.getHours()).slice(-2);
+        var minutes = ('0' + date.getMinutes()).slice(-2);
+        return `${day} ${month} ${year} ${hours}:${minutes}`;
+      }
+      
+</script>
+
+</body>
+</html>
