@@ -13,6 +13,8 @@ services:
       POSTGRES_DB: test
     expose:
       - 5412
+    networks:
+      - my-network
   redis:
     container_name: redis
     image: redis:3.2
@@ -23,6 +25,59 @@ services:
       - '6379'
     volumes:
       - redis_data:/data
+    networks:
+      - my-network
+    extra_hosts:
+      - "localhost:host-gateway"
+  flask_app:
+    container_name: flask_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    expose:
+      - 5000
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - my-network
+  celery_worker:
+    command: "celery -A src.celery_config.celery_app worker --loglevel=info"
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - my-network
+    extra_hosts:
+      - "localhost:host-gateway"
+  celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    command: "celery -A src.celery_config.celery_app beat"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - my-network
+    extra_hosts:
+      - "localhost:host-gateway"
+
+networks:
+  my-network:
+    driver: bridge
+
 volumes:
   postgres_data:
   redis_data:
