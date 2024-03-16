@@ -13,5 +13,16 @@ services:
       POSTGRES_DB: test
     expose:
       - 5412
+  redis:
+    container_name: redis
+    image: redis:3.2
+    restart: always
+    ports:
+      - '6379:6379'
+    expose:
+      - '6379'
+    volumes:
+      - redis_data:/data
 volumes:
   postgres_data:
+  redis_data:

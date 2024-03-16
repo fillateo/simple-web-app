@@ -4,7 +4,6 @@ class RepositoryService:
         self.repository = repository
 
     def create(self, data):
-        print("data:", data, flush=True)
         return self.repository.create(data)
 
     def get(self, object_id):
