@@ -22,5 +22,5 @@ def save_email(json_data, email_service=Provide[DependencyContainer.email_servic
 
 
 @blueprint.route("/", methods=["GET"])
-def show_email_form():
+def email_form():
     return render_template("email_form.html")

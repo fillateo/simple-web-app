@@ -58,7 +58,7 @@
             },
             error: function(xhr, status, error) {
               console.error(xhr.responseText);
-              alert('Error sending email. Please try again.');
+              alert('Failed:' + xhr.responseJSON().error_message );
             }
           });
         });
