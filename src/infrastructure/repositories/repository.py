@@ -78,9 +78,7 @@ class Repository(ABC):
             raise ApiException("Error getting all objects")
 
     def get(self, object_id):
-        return self.base_class.query.filter_by(id=object_id).first_or_404(
-            self.DEFAULT_NOT_FOUND_MESSAGE
-        )
+        return self.base_class.query.filter_by(id=object_id).first()
 
     def _apply_query_params(self, query, query_params):
         return query
@@ -105,7 +103,7 @@ class Repository(ABC):
         try:
             query = self.base_class.query
             query = self.apply_query_params(query, query_params)
-            return query.first_or_404(self.DEFAULT_NOT_FOUND_MESSAGE)
+            return query
         except SQLAlchemyError as e:
             logger.error(e)
             raise ApiException("Error finding object")
